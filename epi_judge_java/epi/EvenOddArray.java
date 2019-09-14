@@ -10,8 +10,15 @@ import java.util.List;
 public class EvenOddArray {
 
   public static void evenOdd(List<Integer> A) {
-    // TODO - you fill in here.
-    return;
+    int evenIndex = 0;
+    int oddIndex = A.size() - 1;
+    while (evenIndex < oddIndex) {
+      if (A.get(evenIndex) % 2 == 0) {
+        evenIndex++;
+      } else {
+        Collections.swap(A, evenIndex, oddIndex--);
+      }
+    }
   }
   @EpiTest(testDataFile = "even_odd_array.tsv")
   public static void evenOddWrapper(TimedExecutor executor, List<Integer> A)
