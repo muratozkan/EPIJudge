@@ -4,26 +4,38 @@ import epi.test_framework.EpiUserType;
 import epi.test_framework.GenericTest;
 import epi.test_framework.TestFailure;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.List;
 import java.util.NoSuchElementException;
 public class StackWithMax {
 
+  static class ItemWithMax {
+    Integer item;
+    Integer max;
+
+    ItemWithMax(Integer item, Integer max) {
+      this.item = item;
+      this.max = max;
+    }
+  }
+
   public static class Stack {
+
+    private final Deque<ItemWithMax> withMaxDeque = new ArrayDeque<>();
+
     public boolean empty() {
-      // TODO - you fill in here.
-      return true;
+      return withMaxDeque.isEmpty();
     }
     public Integer max() {
-      // TODO - you fill in here.
-      return 0;
+      ItemWithMax itemWithMax = withMaxDeque.peek();
+      return itemWithMax == null ? null : itemWithMax.max;
     }
     public Integer pop() {
-      // TODO - you fill in here.
-      return 0;
+      return withMaxDeque.pop().item;
     }
     public void push(Integer x) {
-      // TODO - you fill in here.
-      return;
+      withMaxDeque.push(new ItemWithMax(x, empty() ? x : Math.max(x, max())));
     }
   }
   @EpiUserType(ctorParams = {String.class, int.class})
