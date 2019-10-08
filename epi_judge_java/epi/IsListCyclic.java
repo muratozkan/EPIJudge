@@ -6,7 +6,24 @@ import epi.test_framework.TimedExecutor;
 public class IsListCyclic {
 
   public static ListNode<Integer> hasCycle(ListNode<Integer> head) {
-    // TODO - you fill in here.
+    // Floyd's algorithm, slow and fast walker.
+    ListNode<Integer> slow = head;
+    ListNode<Integer> fast = head;
+    boolean hasCycle = false;
+    while (fast != null && fast.next != null) {
+      fast = fast.next.next;
+      slow = slow.next;
+      if (slow == fast) {
+        if (hasCycle) {
+          // this is the second time slow and fast meets, after slow restarted from the head.
+          return slow;
+        }
+        // slow met fast somewhere in the cycle, not the node cycle begins
+        slow = head;
+        hasCycle = true;
+      }
+    }
+
     return null;
   }
   @EpiTest(testDataFile = "is_list_cyclic.tsv")
