@@ -2,12 +2,33 @@ package epi;
 import epi.test_framework.EpiTest;
 import epi.test_framework.GenericTest;
 import epi.test_framework.TimedExecutor;
+
 public class ReverseWords {
 
   public static void reverseWords(char[] input) {
-    // TODO - you fill in here.
-    return;
+    int n = input.length;
+    reverse(input, 0, n - 1);
+
+    int start = 0;
+    for(int spaceIx = 0; spaceIx <= n; spaceIx++) {
+      if (spaceIx < n && input[spaceIx] != ' ') {
+        continue;
+      }
+      reverse(input, start, spaceIx - 1);
+      start = spaceIx + 1;
+    }
   }
+
+  static void reverse(char[] array, int start, int end) {
+    while (start < end) {
+      char c = array[start];
+      array[start] = array[end];
+      array[end] = c;
+      start ++;
+      end --;
+    }
+  }
+
   @EpiTest(testDataFile = "reverse_words.tsv")
   public static String reverseWordsWrapper(TimedExecutor executor, String s)
       throws Exception {
