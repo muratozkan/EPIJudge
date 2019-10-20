@@ -5,10 +5,22 @@ import epi.test_framework.GenericTest;
 import java.util.List;
 public class SearchFirstKey {
   @EpiTest(testDataFile = "search_first_key.tsv")
-
   public static int searchFirstOfK(List<Integer> A, int k) {
-    // TODO - you fill in here.
-    return 0;
+    int end = A.size() - 1;
+    int start = 0;
+    int ci = -1;            // candidate index
+    while (start <= end) {
+      int m = (end + start) / 2;
+      if (A.get(m) > k) {
+        end = m - 1;
+      } else if (A.get(m) < k) {
+        start = m + 1;
+      } else {
+        ci = m;
+        end = m - 1;
+      }
+    }
+    return ci;
   }
 
   public static void main(String[] args) {
