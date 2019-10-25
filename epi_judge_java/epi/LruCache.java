@@ -4,21 +4,51 @@ import epi.test_framework.EpiUserType;
 import epi.test_framework.GenericTest;
 import epi.test_framework.TestFailure;
 
+import java.util.Deque;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 public class LruCache {
-  LruCache(final int capacity) {}
+  Map<Integer, Integer> isbnToPrice;
+  Deque<Integer> isbnQueue;
+  int capacity;
+
+  LruCache(final int capacity) {
+    isbnToPrice = new HashMap<>(capacity, 1.0f);
+    isbnQueue = new LinkedList<>();
+    this.capacity = capacity;
+  }
+
   public Integer lookup(Integer key) {
-    // TODO - you fill in here.
-    return 0;
+    int price = isbnToPrice.getOrDefault(key, -1);
+    if (price != -1) {
+      isbnQueue.remove(key);  // slow operation
+      isbnQueue.addLast(key);
+    }
+    return price;
   }
   public void insert(Integer key, Integer value) {
-    // TODO - you fill in here.
-    return;
+    if (isbnToPrice.containsKey(key)) {
+      isbnQueue.remove(key);  // slow operation
+      isbnQueue.addLast(key);
+    } else {
+      if (isbnQueue.size() == capacity) {
+        int item = isbnQueue.removeFirst();
+        isbnToPrice.remove(item);
+      }
+      isbnQueue.addLast(key);
+      isbnToPrice.put(key, value);
+    }
   }
-  public Boolean erase(Object key) {
-    // TODO - you fill in here.
-    return true;
+  public Boolean erase(Integer key) {
+    if (isbnToPrice.containsKey(key)) {
+      isbnToPrice.remove(key);
+      isbnQueue.remove(key);  // slow operation
+      return true;
+    }
+    return false;
   }
   @EpiUserType(ctorParams = {String.class, int.class, int.class})
   public static class Op {
