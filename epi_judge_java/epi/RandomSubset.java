@@ -7,24 +7,30 @@ import epi.test_framework.TimedExecutor;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class RandomSubset {
 
   // Returns a random k-sized subset of {0, 1, ..., n - 1}.
   public static List<Integer> randomSubset(int n, int k) {
     Random random = new Random();
-    // O(n) space solution
-    List<Integer> list = new ArrayList<>(n);
-    for (int i = 0; i < n; i++) {
-      list.add(i);
-    }
+    Map<Integer, Integer> map = new HashMap<>();
+    // O(k) space solution
     for (int i = 0; i < k; i++) {
       int r = i + random.nextInt(n - i);
-      Collections.swap(list, i, r);
+      int rv = map.getOrDefault(r, r);
+      int iv = map.getOrDefault(i, i);
+      map.put(i, rv);
+      map.put(r, iv);
     }
-    return list.subList(0, k);
+    return IntStream.range(0, k)
+            .mapToObj(i -> map.get(i))
+            .collect(Collectors.toList());
   }
   private static boolean randomSubsetRunner(TimedExecutor executor, int n,
                                             int k) throws Exception {
