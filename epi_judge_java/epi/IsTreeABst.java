@@ -2,11 +2,21 @@ package epi;
 import epi.test_framework.EpiTest;
 import epi.test_framework.GenericTest;
 public class IsTreeABst {
-  @EpiTest(testDataFile = "is_tree_a_bst.tsv")
 
+  private static boolean recursiveCheck(BinaryTreeNode<Integer> tree, int min, int max) {
+    if (tree == null) {
+      return true;
+    }
+    if (tree.data < min || tree.data > max) {
+      return false;
+    }
+    return recursiveCheck(tree.left, min, tree.data) &&
+            recursiveCheck(tree.right, tree.data, max);
+  }
+
+  @EpiTest(testDataFile = "is_tree_a_bst.tsv")
   public static boolean isBinaryTreeBST(BinaryTreeNode<Integer> tree) {
-    // TODO - you fill in here.
-    return true;
+    return recursiveCheck(tree, Integer.MIN_VALUE, Integer.MAX_VALUE);
   }
 
   public static void main(String[] args) {
