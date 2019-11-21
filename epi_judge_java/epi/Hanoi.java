@@ -5,17 +5,42 @@ import epi.test_framework.TestFailure;
 import epi.test_framework.TimedExecutor;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Deque;
 import java.util.LinkedList;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.List;
 public class Hanoi {
 
   private static final int NUM_PEGS = 3;
 
+  private static List<Integer> moveSingle(List<List<Integer>> pegs, int from, int to) {
+    int r = pegs.get(from).remove(0);
+    pegs.get(to).add(0, r);
+    return List.of(from, to);
+  }
+
+  private static List<List<Integer>> move(List<List<Integer>> pegs, int from, int to, int num) {
+    List<List<Integer>> seq = new LinkedList<>();
+    if (num > 0) {
+      Set<Integer> notTemp = Set.of(from, to);
+      int temp = IntStream.range(0, NUM_PEGS).filter(i -> !notTemp.contains(i)).findFirst().orElse(-1);
+      seq.addAll(move(pegs, from, temp, num - 1));
+      seq.add(moveSingle(pegs, from, to));
+      seq.addAll(move(pegs, temp, to, num - 1));
+    }
+    return seq;
+  }
+
   public static List<List<Integer>> computeTowerHanoi(int numRings) {
-    // TODO - you fill in here.
-    return Collections.emptyList();
+    List<List<Integer>> pegs = IntStream.range(0, NUM_PEGS)
+            .mapToObj(i -> new LinkedList<Integer>())
+            .collect(Collectors.toList());
+
+    IntStream.range(0, numRings).forEach(i -> pegs.get(0).add(i));
+
+    return move(pegs, 0, 1, numRings);
   }
   @EpiTest(testDataFile = "hanoi.tsv")
   public static void computeTowerHanoiWrapper(TimedExecutor executor,
